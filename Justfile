@@ -5,13 +5,13 @@ debug_flags := "-g -O0"
 
 [arg("debug", long="debug", value="true")]
 [arg("release", long="release", value="true")]
-[arg("std")]
+[arg("std", long="std")]
 @build filepath debug="false" release="false" std="c23": (compile filepath debug release std) (link filepath debug release)
     echo "Done."
 
 [arg("debug", long="debug", value="true")]
 [arg("release", long="release", value="true")]
-[arg("std")]
+[arg("std", long="std")]
 compile filepath debug="false" release="false" std="c23":
     #!/bin/sh
     set -eu
@@ -86,7 +86,8 @@ link filepath debug="false" release="false":
     rm -rv build
     echo "Done."
 
-run filepath: (build filepath "true" "false")
+[arg("std", long="std")]
+run filepath std="c23": (build filepath "true" "false" std)
     #!/bin/sh
     set -eu
     filepath="{{filepath}}"
