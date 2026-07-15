@@ -1,0 +1,9 @@
+build/
+
+config.toml
+.env
+
+.vscode
+.zed
+.idea
+.helix
