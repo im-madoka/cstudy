@@ -179,6 +179,9 @@ bool array_reverse(Array * array) {
 }
 
 bool array_copy(Array * dst, const Array * array) {
+  if (dst == NULL || array == NULL) return false;
+  if (dst == array) return true;
+  
   if (dst->capacity < array->capacity) {
     size_t capacity = array->capacity;
 
