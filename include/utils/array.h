@@ -2,6 +2,7 @@
 #define CSTUDY_UTILS_ARRAY_H
 
 #include <stdlib.h>
+#include <assert.h>
 
 #if !defined(__STDC_VERSION__) || __STDC_VERSION__ < 202311L
   #include <stdbool.h>
@@ -41,7 +42,7 @@ bool array_pop(Array * array, void * out);
 // Set the item on the pos.
 void* array_set(Array * array, const size_t pos, const void* item);
 // Get the item on the pos.
-void* array_get(const Array * array, const size_t pos);
+const void* array_get(const Array * array, const size_t pos);
 
 // Reverse the array.
 bool array_reverse(Array * array);
@@ -55,6 +56,8 @@ bool array_copy(Array * dst, const Array * array);
 #include <string.h>
 
 void array_init(Array * array, const size_t element_size) {
+  assert(array != nullptr);
+
   array->items = nullptr;
   array->size = 0;
   array->capacity = 0;
@@ -62,6 +65,8 @@ void array_init(Array * array, const size_t element_size) {
 }
 
 void array_free(Array * array) {
+  assert(array != nullptr);
+
   free(array->items);
   
   array->items = nullptr;
@@ -71,15 +76,19 @@ void array_free(Array * array) {
 }
 
 void array_clear(Array * array) {
+  assert(array != nullptr);
+
   array->size = 0;
 }
 
 const void* array_insert(Array * array, const size_t pos, const void* item) {
+  assert(array != nullptr);
+
   if (pos > array->size) return nullptr;
 
   if (array->size >= array->capacity) {
     size_t capacity = array->capacity;
-    if (0 == capacity) capacity = 128;
+    if (0 == capacity) capacity = 16;
     else capacity += capacity / 2;
 
     void* items = realloc(array->items, capacity * array->element_size);
@@ -108,6 +117,8 @@ const void* array_prepend(Array * array, const void* item) {
 }
 
 bool array_del(Array * array, const size_t pos) {
+  assert(array != nullptr);
+
   if (pos >= array->size) return false;
 
   char* base = (char*)array->items;
@@ -121,6 +132,8 @@ bool array_del(Array * array, const size_t pos) {
 }
 
 bool array_get_and_del(Array * array, const size_t pos, void * out) {
+  assert(array != nullptr && out != nullptr);
+
   if (pos >= array->size) return false;
 
   char* base = (char*)array->items;
@@ -135,6 +148,8 @@ bool array_get_and_del(Array * array, const size_t pos, void * out) {
 }
 
 bool array_pop(Array * array, void * out) {
+  assert(array != nullptr);
+
   if (array->size == 0) return false;
   
   return array_get_and_del(array, array->size - 1, out);
@@ -142,6 +157,8 @@ bool array_pop(Array * array, void * out) {
 
 
 void* array_set(Array * array, const size_t pos, const void* item) {
+  assert(array != nullptr);
+
   if (pos >= array->size) return nullptr;
 
   char* base = (char*)array->items;
@@ -151,7 +168,9 @@ void* array_set(Array * array, const size_t pos, const void* item) {
   return base + pos * array->element_size;
 }
 
-void* array_get(const Array * array, const size_t pos) {
+const void* array_get(const Array * array, const size_t pos) {
+  assert(array != nullptr);
+
   if (pos >= array->size) return nullptr;
 
   char* base = (char*)array->items;
@@ -160,6 +179,8 @@ void* array_get(const Array * array, const size_t pos) {
 }
 
 bool array_reverse(Array * array) {
+  assert(array != nullptr);
+
   if (array->size < 2) return true;
   
   void* buffer = malloc(array->element_size);
@@ -179,7 +200,8 @@ bool array_reverse(Array * array) {
 }
 
 bool array_copy(Array * dst, const Array * array) {
-  if (dst == NULL || array == NULL) return false;
+  assert(array != nullptr && dst != nullptr);
+
   if (dst == array) return true;
   
   if (dst->capacity < array->capacity) {
